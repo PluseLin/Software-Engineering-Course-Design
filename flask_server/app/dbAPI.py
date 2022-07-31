@@ -1,16 +1,16 @@
 from . import db
-from models import *
+from .models import *
 
 def User_Query_by_id(id:int):
     return User.query.filter_by(id=id).first()
 
 def User_Query_by_username(username:str):
-    return User.query.filter_by(username=username).all()
+    return User.query.filter_by(username=username).first()
 
 def User_Query_by_username_and_password(username:str,password:str):
     return User.query.filter_by(
         username=username,password=password
-    ).all()
+    ).first()
 
 def User_Insert(user:User):
     db.session.add(user)
