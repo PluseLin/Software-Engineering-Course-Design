@@ -1,4 +1,3 @@
-from tenacity import retry
 from . import main
 from ..dbAPI import *
 from flask import *
@@ -22,6 +21,21 @@ def login():
             ret_data["iscorrect"]=True
             ret_data["url"]="/{}/index".format(username) #可能需要修改
     return jsonify(ret_data)
+
+@main.route("/userLogout",methods=['POST'])
+def logout():
+    ret_data={
+        "issuccess":False,
+    }
+    if request.method=='POST':
+        req_data=request.get_json()
+        username=req_data["username"]
+        if session[username]:
+            session[username]=False
+            ret_data["issuccess"]=True
+        else:
+            ret_data["issuccess"]=False
+    return ret
 
 @main.route("/userRegister",methods=['POST'])
 def register():
@@ -99,3 +113,38 @@ def updateUserInfo():
             #修改ret数据
             ret_data["iscorrect"]=True
     return jsonify(ret_data)
+
+@main.route("/updateUserPassword",methods=['PUT'])
+def updateUserPassword():
+    ret_data={
+        "iscorrect":False,
+        "message":""
+    }
+    if request.method=="PUT":
+        req_data=request.get_json()
+        username=req_data["username"]
+        new_password=req_data["password"]
+        user=User_Query_by_username(username)
+        #首先，保证用户存在
+        if user is None:
+            ret_data["message"]="用户不存在！"
+        else:
+            #更新user的password
+            user.password=new_password
+            User_Update(user)
+            #修改ret数据
+            ret_data["iscorrect"]=True
+            ret_data["message"]="修改成功"
+    return jsonify(ret_data)
+
+@main.route("/getUserCollection_<username>",methods=['GET'])
+def getUserCollection(username):
+    ret_data={
+        "collections":[]
+    }
+    if request.method=='GET':
+        user=User_Query_by_username(username)
+        for each in Collection_Query_by_uid(user.id):
+            park_name=Park_Query_by_id(each.p_id).parkname
+            ret_data["collections"].append(park_name)
+    return jsonify(ret_data) 
