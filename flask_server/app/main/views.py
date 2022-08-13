@@ -138,7 +138,7 @@ def updateUserPassword():
     return jsonify(ret_data)
 
 @main.route("/getUserCollection_<username>",methods=['GET'])
-def getUserCollection(username):
+def getUserCollection(username): 
     ret_data={
         "collections":[]
     }
