@@ -32,6 +32,7 @@ class Comment(db.Model):
 class Park(db.Model):
     __tablename__="park"
     id=db.Column(db.Integer,primary_key=True)
+    parkname=db.Column(db.String(50))
     location=db.Column(db.String(100))
     update_time=db.Column(db.DateTime())
     map=db.Column(db.String(255))
@@ -44,3 +45,4 @@ class Spot(db.Model):
     detail=db.Column(db.String(500))
     update_time=db.Column(db.DateTime())
     map=db.Column(db.String(255))
+    
