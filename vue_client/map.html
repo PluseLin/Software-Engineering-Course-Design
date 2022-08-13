@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Baidu Map </title>
+  <style type="text/css">
+    html {
+      height: 100%
+    }
+
+    body {
+      height: 100%;
+      margin: 0px;
+      padding: 0px
+    }
+
+    #container {
+      height: 100%
+    }
+  </style>
+  <script src="https://api.map.baidu.com/api?type=webgl&v=1.0&ak=hFuGDgf4tKCEjq3Mf7YVOqNw8ZIeDGYA"></script>
+
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <div id="app">
+    <v-app id="inspire">
+      <v-app-bar app clipped-left color="white">
+        <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+        <span class="title mr-5">收藏</span>
+
+        <div v-on:keyup.enter="search">
+          <v-menu offset-y>
+            <template v-slot:activator="{ on }">
+              <v-text-field solo hide-details label="请输入关键词" append-icon="mdi-magnify" v-model="searchInput"
+                autocomplete="off" v-on="on" ref="search"></v-text-field>
+            </template>
+
+            <v-list v-if="searchRes.length > 0" class="border-list" dense>
+              <v-list-item v-for="(park, index) in searchRes" :key="index" @click="chosePark(park.id)">
+                <v-list-item-title>{{ park.name }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </div>
+      </v-app-bar>
+
+      <v-navigation-drawer v-model="drawer" app clipped color="grey lighten-4">
+        <v-list class="grey lighten-4" dense>
+          <v-list-item v-for="(park, index) in favorites" :key="index" @click="chosePark(park.id)">
+            <v-list-item-title>{{ park.name }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+
+      <v-main>
+
+        <v-btn v-bind:color="heartColor" style="z-index: 10;" x-large icon absolute right bottom @click="clickHeart()">
+          <v-icon>mdi-heart</v-icon>
+        </v-btn>
+
+        <div id="container">
+        </div>
+
+      </v-main>
+
+      <div class="text-center">
+        <v-bottom-sheet scrollable>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="blue" class="mr-10" dark v-bind="attrs" v-on="on" @click="showSpots()">
+              景点
+            </v-btn>
+          </template>
+
+          <v-card>
+            <v-card-title>1号公园</v-card-title>
+            <v-divider></v-divider>
+            <v-card-text>
+              <v-container v-for="(spot,index) in spots" :key="index" class="grey lighten-5">
+                <v-row no-gutters>
+                  <v-col>
+                    <v-row class="mt-2">
+                      {{spot.name}}
+                    </v-row>
+                    <v-row>
+                      {{spot.detail}}
+                    </v-row>
+                  </v-col>
+                  <v-col>
+                    <v-img :aspect-ratio="16/9" src="/vue_client/1.jpg"></v-img>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
+          </v-card>
+        </v-bottom-sheet>
+
+        <v-bottom-sheet scrollable>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="blue" dark v-bind="attrs" v-on="on" @click="showComments()">
+              评论
+            </v-btn>
+          </template>
+
+          <v-card>
+            <v-card-subtitle>
+              <v-container>
+                <v-row>
+                  <v-col style="font-size: 18px;" class="mt-2">
+                    评分
+                  </v-col>
+                  <v-col cols="9">
+                    <v-slider v-model="score" :thumb-size="24" thumb-label="always" max="5" min="1" step="1"></v-slider>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-text-field solo hide-details label="评论该公园" v-model="content"></v-text-field>
+                  <v-card-actions>
+                    <v-btn color="blue darken-1" text style="font-size: 18px;" @click="comment()">
+                      发布
+                    </v-btn>
+                  </v-card-actions>
+                </v-row>
+              </v-container>
+            </v-card-subtitle>
+            <v-divider></v-divider>
+
+
+            <v-card-text style="height: 300px;">
+              <v-container v-for="(comment,index) in comments" :key="index" class="grey lighten-5 mb-6">
+                <v-row no-gutters>
+                  评分：{{comment.score}}
+                </v-row>
+                <v-row no-gutters>
+                  {{comment.content}}
+                </v-row>
+              </v-container>
+            </v-card-text>
+          </v-card>
+        </v-bottom-sheet>
+      </div>
+
+    </v-app>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+</body>
+
+</html>
