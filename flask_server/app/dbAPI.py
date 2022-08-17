@@ -1,7 +1,11 @@
-from flask_server.app import db
-from flask_server.app.models import *
+# from flask_server.app import db
+# from flask_server.app.models import *
+
+from . import db
+from .models import *
+
 import datetime
-#此处相对引用会报错。。尝试解决无果后换用绝对路径引用
+
 def User_Query_by_id(id:int):
     return User.query.filter_by(id=id).first()
 

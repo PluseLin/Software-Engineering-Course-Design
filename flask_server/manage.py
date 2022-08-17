@@ -1,7 +1,9 @@
-# from app import create_app,db
-# from app.models import *
-from flask_server.app import create_app,db
-from flask_server.app.models import *
+from app import create_app,db
+from app.models import *
+
+# from flask_server.app import create_app,db
+# from flask_server.app.models import *
+
 import config
 
 app =create_app('default')

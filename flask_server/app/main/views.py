@@ -1,10 +1,11 @@
-from flask_server.app.main import main
-from flask_server.app.dbAPI import *
+from . import main
+from ..dbAPI import *
 from flask import *
-import time
-# from . import main
-# from ..dbAPI import *
+
+# from flask_server.app.main import main
+# from flask_server.app.dbAPI import *
 # from flask import *
+
 # import time
 
 @main.route("/userLogin",methods=['POST'])

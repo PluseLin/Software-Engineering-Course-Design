@@ -1,4 +1,6 @@
-from flask_server.app import db
+from . import db
+
+# from flask_server.app import db
 #此处相对引用会报错。。尝试解决无果后换用绝对路径引用
 class User(db.Model):
     __tablename__="user"

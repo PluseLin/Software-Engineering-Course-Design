@@ -1,7 +1,10 @@
 from flask import *
 from flask_sqlalchemy import *
 from flask_cors import *
-from flask_server.config import config
+
+from config import config
+
+# from flask_server.config import config
 #此处相对引用会报错。。尝试解决无果后换用绝对路径引用
 db=SQLAlchemy()
 

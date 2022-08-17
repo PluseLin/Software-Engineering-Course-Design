@@ -1,8 +1,13 @@
-from flask_server.app.map import theparks
-from flask_server.app.dbAPI import *
+from . import theparks
+from ..dbAPI import *
 from flask import *
-import time
 
+
+# from flask_server.app.map import theparks
+# from flask_server.app.dbAPI import *
+# from flask import *
+
+import time
 
 ##场景：用户点击收藏列表或搜索栏中的公园，切换当前公园
 @theparks.route("/parks/<int:id>",methods=['GET'])
@@ -116,9 +121,9 @@ def addcomment():
      }
      if request.method == 'PUT':
          req_data = request.get_json()
-         putForm = json.loads(request.get_data(as_text=True))
-         print(putForm["park_id"])
-         Comment_Add(putForm["park_id"], putForm["user_id"],putForm["score"],putForm["content"])
+         #putForm = json.loads(request.get_data(as_text=True))
+         #print(putForm["park_id"])
+         Comment_Add(req_data["park_id"], req_data["user_id"],req_data["score"],req_data["content"])
          ret_data["iscorrect"] = True
      return ret_data
 # json测试数据
