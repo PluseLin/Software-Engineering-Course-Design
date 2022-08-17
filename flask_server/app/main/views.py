@@ -1,7 +1,11 @@
-from . import main
-from ..dbAPI import *
+from flask_server.app.main import main
+from flask_server.app.dbAPI import *
 from flask import *
 import time
+# from . import main
+# from ..dbAPI import *
+# from flask import *
+# import time
 
 @main.route("/userLogin",methods=['POST'])
 def login():
@@ -35,7 +39,7 @@ def logout():
             ret_data["issuccess"]=True
         else:
             ret_data["issuccess"]=False
-    return ret
+    return ret_data
 
 @main.route("/userRegister",methods=['POST'])
 def register():
