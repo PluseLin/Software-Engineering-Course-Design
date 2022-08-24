@@ -46,7 +46,7 @@ def Collection_Query_by_p_uid(u_id:int,p_id:int):
     return Collection.query.filter_by(u_id=u_id,p_id=p_id).first()
 
 def Collection_Query_by_pid(p_id:int):
-    return Collection.query_filter_by(p_id=p_id).all()
+    return Collection.query.filter_by(p_id=p_id).all()
 
 def Collection_Add(u_id:int,p_id:int):
     collection=Collection(
@@ -66,7 +66,12 @@ def Collection_Delete(u_id:int,p_id:int):
 
 def Park_Query_by_id(id:int):
     return Park.query.filter_by(id=id).first()
+
 def Park_Query_search(searchInput):
     return Park.query.filter(Park.parkname.contains(searchInput)).first()#all()
+
 def Spots_Query_by_parkid(id:int):
-    return db.session.query(Spot.spotname,Spot.detail,Spot.map).filter_by(p_id=id).all()
+    return db.session.query(Spot.spotname,Spot.detail,Spot.picture).filter_by(p_id=id).all()
+
+def Park_Qyery_all():
+    return Park.query.all()

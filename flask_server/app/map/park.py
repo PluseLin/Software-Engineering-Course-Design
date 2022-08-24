@@ -9,6 +9,22 @@ from flask import *
 
 import time
 
+#场景：主页获取全部公园信息
+@theparks.route("/allparks",methods=['GET'])
+def getAllParks():
+    ret_data={
+        "parks":[]
+    }
+    if request.method=='GET':
+        for each in Park_Qyery_all():
+            ret_data["parks"].append({
+                "id":each.id,
+                "parkname":each.parkname,
+                "picture":each.picture,
+                "detail":each.detail,
+            })
+    return ret_data
+
 ##场景：用户点击收藏列表或搜索栏中的公园，切换当前公园
 @theparks.route("/parks/<int:id>",methods=['GET'])
 def findparks(id):
@@ -60,7 +76,7 @@ def parkspots(id):
                 }
                 tempdata["name"] = spot.spotname
                 tempdata["detail"] = spot.detail
-                tempdata["img"] = spot.map
+                tempdata["img"] = spot.picture
                 print(tempdata)
                 ret_data.append(tempdata)
     return jsonify(ret_data)
@@ -86,30 +102,28 @@ def parkcomments(id):
 
 
 #场景：用户点击灰色收藏按钮，将当前公园添加至收藏夹中
-@theparks.route("/favorites/<userID>/<parkID>",methods=['PUT'])
+@theparks.route("/favorites/<userID>/<parkID>",methods=['PUT','DELETE'])
 def addCollection(userID,parkID):
-     ret_data={
+    ret_data={
         "iscorrect":False,
         "message":""
-     }
-     if request.method == 'PUT':
-         req_data = request.get_json()
-         Collection_Add(int(userID), int(parkID))
-         # collect = Collection(u_id=userID, p_id=parkID)
-         ret_data["iscorrect"] = True
-     return ret_data
-
-#场景：用户点击红色收藏按钮，将当前公园从收藏夹移除
-@theparks.route("/favorites/<userID>/<parkID>",methods=['DELETE'])
-def delCollection(userID,parkID):
-    ret_data = {
-        "iscorrect": False,
-        "message": ""
     }
-    if request.method == 'DELETE':
+    if request.method == 'PUT':
         req_data = request.get_json()
-        Collection_Delete(int(userID), int(parkID))
-        ret_data["iscorrect"] = True
+        if(Collection_Query_by_p_uid(userID,parkID) is None):
+            Collection_Add(int(userID), int(parkID))
+            ret_data["iscorrect"] = True
+            ret_data["message"]="收藏成功"
+        else:
+            ret_data["message"]="您已收藏该公园！"
+    
+    elif request.method =='DELETE':
+        if(Collection_Query_by_p_uid(userID,parkID) is not None):
+            Collection_Delete(int(userID), int(parkID))
+            ret_data["iscorrect"] = True
+            ret_data["message"]="取消收藏成功"
+        else:
+            ret_data["message"]="您未收藏该公园！"
     return ret_data
 
 #场景：场景：用户对当前公园发表评论

@@ -1,3 +1,4 @@
+from email.policy import default
 from . import db
 
 # from flask_server.app import db
@@ -35,11 +36,10 @@ class Park(db.Model):
     __tablename__="park"
     id=db.Column(db.Integer,primary_key=True)
     parkname=db.Column(db.String(50))
-   # location=db.Column(db.String(100))
     longitude=db.Column(db.String(100))
     latitude=db.Column(db.String(100))
     update_time=db.Column(db.DateTime())
-    map=db.Column(db.String(255))
+    picture=db.Column(db.String(255),default="default.jpg")
     detail=db.Column(db.String(1000))
 
 class Spot(db.Model):
@@ -48,6 +48,6 @@ class Spot(db.Model):
     p_id=db.Column(db.Integer,db.ForeignKey('park.id'))
     detail=db.Column(db.String(500))
     update_time=db.Column(db.DateTime())
-    map=db.Column(db.String(255))
+    picture=db.Column(db.String(255),default="default.jpg")
     spotname = db.Column(db.String(50))
     

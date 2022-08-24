@@ -6,7 +6,7 @@ from flask import *
 # from flask_server.app.dbAPI import *
 # from flask import *
 
-# import time
+import time
 
 @main.route("/userLogin",methods=['POST'])
 def login():
@@ -51,11 +51,9 @@ def register():
     print(request.method)
     if(request.method=='POST'):
         req_data=request.get_json()
-        print(req_data)
         username=req_data["username"]
         password,repassword=req_data["password"],req_data["repassword"]
         #先检查用户名是否重复
-        print(User_Query_by_username(username))
         if User_Query_by_username(username) is not None:
             ret_data["message"]="用户名已被使用！"
         #再检查两次密码是否一致
