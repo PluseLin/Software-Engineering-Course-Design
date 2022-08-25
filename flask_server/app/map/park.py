@@ -23,7 +23,7 @@ def getAllParks():
                 "picture":each.picture,
                 "detail":each.detail,
             })
-    return ret_data
+    return jsonify(ret_data)
 
 ##场景：用户点击收藏列表或搜索栏中的公园，切换当前公园
 @theparks.route("/parks/<int:id>",methods=['GET'])

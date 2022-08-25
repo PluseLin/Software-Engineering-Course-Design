@@ -10,6 +10,7 @@ import time
 
 @main.route("/userLogin",methods=['POST'])
 def login():
+    global session
     ret_data={
         "iscorrect":False,
         "message":"",
@@ -22,25 +23,28 @@ def login():
             ret_data["message"]="用户名或密码错误"
             ret_data["url"]="#"
         else:
-            session["username"]=True
+            session[username]=True
+            session.permanent=True
             ret_data["iscorrect"]=True
             ret_data["url"]="/{}/index".format(username) #可能需要修改
     return jsonify(ret_data)
 
-@main.route("/userLogout",methods=['POST'])
-def logout():
-    ret_data={
-        "issuccess":False,
-    }
-    if request.method=='POST':
-        req_data=request.get_json()
-        username=req_data["username"]
-        if session[username]:
-            session[username]=False
-            ret_data["issuccess"]=True
-        else:
-            ret_data["issuccess"]=False
-    return ret_data
+# @main.route("/userLogout",methods=['POST'])
+# def logout():
+#     global session
+#     ret_data={
+#         "issuccess":False,
+#     }
+#     if request.method=='POST':
+#         print(session)
+#         req_data=request.get_json()
+#         username=req_data["username"]
+#         if session.get(username)==True:
+#             session[username]=False
+#             ret_data["issuccess"]=True
+#         else:
+#             ret_data["issuccess"]=False
+#     return ret_data
 
 @main.route("/userRegister",methods=['POST'])
 def register():
@@ -48,7 +52,6 @@ def register():
         "iscorrect":False,
         "message":""
     }
-    print(request.method)
     if(request.method=='POST'):
         req_data=request.get_json()
         username=req_data["username"]
@@ -75,12 +78,12 @@ def register():
 @main.route("/getUserInfo_<username>",methods=['GET'])
 def getUserInfo(username):
     ret_data={
-        "id":0,
+        "id":-1,
         "username":username,
         "password":"",
         "email":"",
         "regtime":"",
-        "ip_addr":request.remote_addr
+        "ip_addr":""
     }
     if request.method=='GET':
         user=User_Query_by_username(username)
@@ -89,6 +92,7 @@ def getUserInfo(username):
             ret_data["email"]=user.email
             ret_data["regtime"]=user.reg_time
             ret_data["id"]=user.id
+            ret_data["ip_addr"]=request.remote_addr
     return jsonify(ret_data)
 
 @main.route("/updateUserInfo",methods=['PUT'])
@@ -126,11 +130,19 @@ def updateUserPassword():
     if request.method=="PUT":
         req_data=request.get_json()
         username=req_data["username"]
-        new_password=req_data["password"]
+        old_password=req_data["old_password"]
+        new_password=req_data["new_password"]
+        new_repassword=req_data["new_repassword"]
         user=User_Query_by_username(username)
         #首先，保证用户存在
         if user is None:
             ret_data["message"]="用户不存在！"
+        #其次，旧密码应该正确
+        elif user.password!=old_password:
+            ret_data["message"]="旧密码不正确！"
+        #再其次，两次密码应该一致
+        elif new_password!=new_repassword:
+            ret_data["message"]="两次确认新密码不一致！"
         else:
             #更新user的password
             user.password=new_password
