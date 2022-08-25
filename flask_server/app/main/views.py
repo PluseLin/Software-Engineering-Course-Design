@@ -95,8 +95,33 @@ def getUserInfo(username):
             ret_data["ip_addr"]=request.remote_addr
     return jsonify(ret_data)
 
-@main.route("/updateUserInfo",methods=['PUT'])
-def updateUserInfo():
+@main.route("/updateUsername",methods=['PUT'])
+def updateUsername():
+    ret_data={
+        "iscorrect":False,
+        "message":""
+    }
+    if request.method=="PUT":
+        req_data=request.get_json()
+        old_username=req_data["old_username"]
+        new_username=req_data["new_username"]
+        user=User_Query_by_username(old_username)
+        #首先，检查user是否存在
+        if user is None:
+            ret_data["message"]="用户不存在！"
+        #其次，检查用户名是否被占用
+        elif User_Query_by_username(new_username) is not None:
+            ret_data["message"]="用户名已被使用！"
+        #若都符合，则修改
+        else:
+            user.username=new_username
+            User_Update(user)
+            ret_data["iscorrect"]=True
+            ret_data["message"]="修改用户名成功！"
+    return jsonify(ret_data)
+
+@main.route("/updateUserEmail",methods=['PUT'])
+def updateUserEmail():
     ret_data={
         "iscorrect":False,
         "message":""
@@ -104,21 +129,17 @@ def updateUserInfo():
     if request.method=="PUT":
         req_data=request.get_json()
         username=req_data["username"]
-        user_id=req_data["user_id"]
-        user=User_Query_by_id(user_id)
-        #首先，保证用户id存在
+        new_email=req_data["new_email"]
+        user=User_Query_by_username(username)
+        #首先，检查user是否存在
         if user is None:
             ret_data["message"]="用户不存在！"
-        #其次，保证新用户名存在
-        elif User_Query_by_username(username) is not None:
-            ret_data["message"]="新用户名已被使用！"
+        #若符合，则修改
         else:
-            #更新user
-            user.username=req_data["username"]
-            user.email=req_data["email"]
+            user.email=new_email
             User_Update(user)
-            #修改ret数据
             ret_data["iscorrect"]=True
+            ret_data["message"]="修改成功！"
     return jsonify(ret_data)
 
 @main.route("/updateUserPassword",methods=['PUT'])
