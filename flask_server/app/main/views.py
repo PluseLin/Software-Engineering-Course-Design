@@ -29,23 +29,6 @@ def login():
             ret_data["url"]="/{}/index".format(username) #可能需要修改
     return jsonify(ret_data)
 
-# @main.route("/userLogout",methods=['POST'])
-# def logout():
-#     global session
-#     ret_data={
-#         "issuccess":False,
-#     }
-#     if request.method=='POST':
-#         print(session)
-#         req_data=request.get_json()
-#         username=req_data["username"]
-#         if session.get(username)==True:
-#             session[username]=False
-#             ret_data["issuccess"]=True
-#         else:
-#             ret_data["issuccess"]=False
-#     return ret_data
-
 @main.route("/userRegister",methods=['POST'])
 def register():
     ret_data={
@@ -181,6 +164,11 @@ def getUserCollection(username):
     if request.method=='GET':
         user=User_Query_by_username(username)
         for each in Collection_Query_by_uid(user.id):
-            park_name=Park_Query_by_id(each.p_id).parkname
-            ret_data["collections"].append(park_name)
+            park=Park_Query_by_id(each.p_id)
+            ret_data["collections"].append({
+                "parkname":park.parkname,
+                "park_id":park.id,
+                "park_long":park.longitude,
+                "park_lati":park.latitude
+            })
     return jsonify(ret_data) 
