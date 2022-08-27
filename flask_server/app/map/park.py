@@ -142,7 +142,6 @@ def favor_parks(userID):
     if request.method == 'GET':
         seachresult = Collection_Query_by_uid(userID)
         if seachresult is not None:
-            # print(seachresult)
             for favorresult in seachresult:
                 tempdata = {
                     "id": 0,
@@ -150,7 +149,6 @@ def favor_parks(userID):
                 }
                 tempdata["id"] = favorresult.p_id
                 id_park = Park_Query_by_id(favorresult.p_id)
-                print(id_park)
                 tempdata["name"] =id_park.parkname
                 ret_data.append(tempdata)
         print(tempdata)
