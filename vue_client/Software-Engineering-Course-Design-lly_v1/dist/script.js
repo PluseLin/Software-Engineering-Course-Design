@@ -3,7 +3,19 @@ const NOT_FAVORITES_COLOR = 'grey'
 
 window.onload = function () {
   var cookie = document.cookie
-  console.log(cookie)
+
+  function getValueByKey(key) {
+    var start = cookie.indexOf(key)
+    var slice = cookie.substring(start)
+    var end = slice.indexOf(';')
+    slice = slice.substring(0, end)
+    console.log(slice.split('=')[1])
+    return slice.split('=')[1]
+  }
+  
+  var userID = getValueByKey('user_id')
+  var parkID = getValueByKey('park_id')
+  app.setInitInfo(userID, parkID)
 }
 
 var app = new Vue({
@@ -21,44 +33,18 @@ var app = new Vue({
     parkName: '同济大学(嘉定校区)',
 
     // 收藏
-    favorites: [
-      { id: 1, name: '1号公园' },
-      { id: 2, name: '2号公园' },
-      { id: 3, name: '3号公园' },
-      { id: 4, name: '4号公园' },
-      { id: 5, name: '5号公园' },
-    ],
+    favorites: [],
 
     // 搜索
     searchInput: "",
-    searchRes: [
-      { id: 1, name: '1号公园' },
-      { id: 2, name: '2号公园' },
-      { id: 3, name: '3号公园' },
-      { id: 4, name: '4号公园' },
-      { id: 5, name: '5号公园' },
-    ],
+    searchRes: [],
 
     // 收藏按钮
     heartColor: IN_FAVORITES_COLOR,
 
     // 景点
     spots: [
-      { name: '景点1', detail: '这是景点1', img: '这是图片' },
-      { name: '景点1', detail: '这是景点1', img: '这是图片' },
-      { name: '景点1', detail: '这是景点1', img: '这是图片' },
-      { name: '景点1', detail: '这是景点1', img: '这是图片' },
-      { name: '景点1', detail: '这是景点1', img: '这是图片' },
-      { name: '景点1', detail: '这是景点1', img: '这是图片' },
-      { name: '景点1', detail: '这是景点1', img: '这是图片' },
-      { name: '景点1', detail: '这是景点1', img: '这是图片' },
-      { name: '景点1', detail: '这是景点1', img: '这是图片' },
-      { name: '景点1', detail: '这是景点1', img: '这是图片' },
-      { name: '景点1', detail: '这是景点1', img: '这是图片' },
-      { name: '景点1', detail: '这是景点1', img: '这是图片' },
-      { name: '景点1', detail: '这是景点1', img: '这是图片' },
-      { name: '景点1', detail: '这是景点1', img: '这是图片' },
-      { name: '景点1', detail: '这是景点1', img: '这是图片' },
+      { name: '示例景点', detail: '示例景点', img: '示例景点' },
     ],
     isSpotsUpdated: false,
 
@@ -66,20 +52,16 @@ var app = new Vue({
     score: 1,
     content: '',
     comments: [
-      { score: '1', content: '这是评论1' },
-      { score: '1', content: '这是评论1' },
-      { score: '1', content: '这是评论1' },
-      { score: '1', content: '这是评论1' },
-      { score: '1', content: '这是评论1' },
-      { score: '1', content: '这是评论1' },
-      { score: '1', content: '这是评论1' },
-      { score: '1', content: '这是评论1' },
-      { score: '1', content: '这是评论1' },
-      { score: '1', content: '这是评论1' },
+      { score: '1', content: '示例评论' },
     ],
     isCommentsUpdated: false,
   }),
   methods: {
+    setInitInfo: function (userID, parkID, latitude, longitude) {
+      this.userID = userID
+      this.chosePark(parkID)
+    },
+
     // 展示收藏列表
     showFavorties: function () {
       this.drawer = !this.drawer
