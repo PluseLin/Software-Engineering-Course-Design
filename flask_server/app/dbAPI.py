@@ -68,7 +68,7 @@ def Park_Query_by_id(id:int):
     return Park.query.filter_by(id=id).first()
 
 def Park_Query_search(searchInput):
-    return Park.query.filter(Park.parkname.contains(searchInput)).first()#all()
+    return Park.query.filter(Park.parkname.contains(searchInput)).all()#all()
 
 def Spots_Query_by_parkid(id:int):
     return db.session.query(Spot.spotname,Spot.detail,Spot.picture).filter_by(p_id=id).all()

@@ -2,7 +2,6 @@ import os
 basedir=os.path.abspath(os.path.dirname(__file__))
 class Config:
     #SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@localhost/navigator'
-    #SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:001210@localhost/software_pro'
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:012704@localhost/navigator'
     #----------暂时修改一下数据库相关配置： 密码
 

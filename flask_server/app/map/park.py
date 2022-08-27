@@ -46,18 +46,28 @@ def findparks(id):
 #场景：用户在搜索框输入关键字，搜索公园
 @theparks.route("/parks/<searchInput>/search",methods=['GET'])
 def searchparks(searchInput):
-    #searchInput = request.args.get("searchInput")
-    ret_data = {
-        "id": 0,
-        "name":"",
-    }
+    ret_data = []
+    # ret_data = {
+    #     "id": 0,
+    #     "name":"",
+    # }
     if request.method == 'GET':
         seachresult = Park_Query_search(searchInput)
         if seachresult is not None:
             print(seachresult)
-            ret_data["id"] = seachresult.id
-            ret_data["name"] = seachresult.parkname
-    return ret_data
+            for parks in seachresult:
+                tempdata = {
+                    "id": 0,
+                    "name": "",
+                }
+                tempdata["id"] = parks.id
+                tempdata["name"] =parks.parkname
+                print(tempdata)
+                ret_data.append(tempdata)
+            # ret_data["id"] = seachresult.id
+            # ret_data["name"] = seachresult.parkname
+    return jsonify(ret_data)
+    # return ret_data
 
 #场景：用户点击“景点”按钮，拉取当前公园的景点信息
 @theparks.route("/parks/<int:id>/spots",methods=['GET'])
