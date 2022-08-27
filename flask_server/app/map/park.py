@@ -23,6 +23,7 @@ def getAllParks():
                 "picture":each.picture,
                 "detail":each.detail,
             })
+            #print(ret_data["parks"][-1])
     return jsonify(ret_data)
 
 ##场景：用户点击收藏列表或搜索栏中的公园，切换当前公园
@@ -54,7 +55,7 @@ def searchparks(searchInput):
     if request.method == 'GET':
         seachresult = Park_Query_search(searchInput)
         if seachresult is not None:
-            print(seachresult)
+            # print(seachresult)
             for parks in seachresult:
                 tempdata = {
                     "id": 0,
@@ -62,7 +63,7 @@ def searchparks(searchInput):
                 }
                 tempdata["id"] = parks.id
                 tempdata["name"] =parks.parkname
-                print(tempdata)
+                # print(tempdata)
                 ret_data.append(tempdata)
             # ret_data["id"] = seachresult.id
             # ret_data["name"] = seachresult.parkname
@@ -76,9 +77,9 @@ def parkspots(id):
     if request.method == 'GET':
         getspots = Spots_Query_by_parkid(id)
         if getspots is not None:
-            print(getspots)
+            # print(getspots)
             for spot in getspots:
-                print(spot.detail)
+                # print(spot.detail)
                 tempdata = {
                     "name": 0,
                     "detail": "",
@@ -87,7 +88,7 @@ def parkspots(id):
                 tempdata["name"] = spot.spotname
                 tempdata["detail"] = spot.detail
                 tempdata["img"] = spot.picture
-                print(tempdata)
+                # print(tempdata)
                 ret_data.append(tempdata)
     return jsonify(ret_data)
 
@@ -98,7 +99,7 @@ def parkcomments(id):
     if request.method == 'GET':
         getcomments = Comments_Query_by_parkid(id)
         if getcomments is not None:
-            print(getcomments)
+            # print(getcomments)
             for thecomment in getcomments:
                 tempdata = {
                     "score": "",
@@ -106,7 +107,7 @@ def parkcomments(id):
                 }
                 tempdata["score"] = thecomment.score
                 tempdata["content"] = thecomment.content
-                print(tempdata)
+                # print(tempdata)
                 ret_data.append(tempdata)
     return jsonify(ret_data)
 
@@ -151,7 +152,6 @@ def favor_parks(userID):
                 id_park = Park_Query_by_id(favorresult.p_id)
                 tempdata["name"] =id_park.parkname
                 ret_data.append(tempdata)
-        print(tempdata)
     return jsonify(ret_data)
 
 #场景：场景：用户对当前公园发表评论

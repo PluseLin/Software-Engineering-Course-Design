@@ -163,12 +163,13 @@ def getUserCollection(username):
     }
     if request.method=='GET':
         user=User_Query_by_username(username)
-        for each in Collection_Query_by_uid(user.id):
-            park=Park_Query_by_id(each.p_id)
-            ret_data["collections"].append({
-                "parkname":park.parkname,
-                "park_id":park.id,
-                "park_long":park.longitude,
-                "park_lati":park.latitude
+        if user is not None:
+            for each in Collection_Query_by_uid(user.id):
+                park=Park_Query_by_id(each.p_id)
+                ret_data["collections"].append({
+                    "parkname":park.parkname,
+                    "park_id":park.id,
+                    "park_long":park.longitude,
+                    "park_lati":park.latitude
             })
     return jsonify(ret_data) 
