@@ -135,6 +135,27 @@ def addCollection(userID,parkID):
             ret_data["message"]="您未收藏该公园！"
     return ret_data
 
+#场景：用户点击左上角收藏按钮，展示收藏列表
+@theparks.route("/favorites/<userID>",methods=['GET'])
+def favor_parks(userID):
+    ret_data = []
+    if request.method == 'GET':
+        seachresult = Collection_Query_by_uid(userID)
+        if seachresult is not None:
+            # print(seachresult)
+            for favorresult in seachresult:
+                tempdata = {
+                    "id": 0,
+                    "name": "",
+                }
+                tempdata["id"] = favorresult.p_id
+                id_park = Park_Query_by_id(favorresult.p_id)
+                print(id_park)
+                tempdata["name"] =id_park.parkname
+                ret_data.append(tempdata)
+        print(tempdata)
+    return jsonify(ret_data)
+
 #场景：场景：用户对当前公园发表评论
 @theparks.route("/comment",methods=['PUT'])
 def addcomment():
