@@ -1,6 +1,11 @@
 const IN_FAVORITES_COLOR = 'pink'
 const NOT_FAVORITES_COLOR = 'grey'
 
+window.onload = function () {
+  var cookie = document.cookie
+  console.log(cookie)
+}
+
 var app = new Vue({
   el: '#app',
   vuetify: new Vuetify(),
@@ -11,9 +16,9 @@ var app = new Vue({
     drawer: null,
 
     // 状态信息
-    userID: 0,
-    parkID: 0,
-    parkName: '1号公园',
+    userID: 5,
+    parkID: 1,
+    parkName: '同济大学(嘉定校区)',
 
     // 收藏
     favorites: [
@@ -75,18 +80,32 @@ var app = new Vue({
     isCommentsUpdated: false,
   }),
   methods: {
-    // 收藏、搜索栏选择公园
-    chosePark: function (id) {
-      fetch(`/parks/${id}`, {
+    // 展示收藏列表
+    showFavorties: function () {
+      this.drawer = !this.drawer
+      fetch(`http://localhost:8000/favorites/${this.userID}`, {
         method: 'get',
       })
         .then(res => {
           if (res.ok) return res.json()
         })
         .then(response => {
-          this.id = id
-          this.parkName = response.data[0].name
-          updateMap(response.data[0].longitude, response.data[0].latitude)
+          this.favorites = response
+        })
+    },
+
+    // 收藏、搜索栏选择公园
+    chosePark: function (id) {
+      fetch(`http://localhost:8000/parks/${id}`, {
+        method: 'get',
+      })
+        .then(res => {
+          if (res.ok) return res.json()
+        })
+        .then(response => {
+          this.parkID = id
+          this.parkName = response.name
+          updateMap(response.longitude, response.latitude)
 
           // 切换公园时不立即拉取该公园的景点、评论信息
           // 使用bool值记录当前景点、评论信息是否为最新
@@ -98,21 +117,21 @@ var app = new Vue({
 
     // 搜索
     search: function () {
-      fetch(`/parks/${this.searchInput}/search`, {
+      fetch(`http://localhost:8000/parks/${this.searchInput}/search`, {
         method: 'get',
       })
         .then(res => {
           if (res.ok) return res.json()
         })
         .then(response => {
-          this.searchRes = response.data
+          this.searchRes = response
         })
     },
 
     // 点击收藏按钮
     clickHeart: function () {
       if (this.heartColor == IN_FAVORITES_COLOR) {
-        fetch(`/favorites/${this.userID}/${this.parkID}`, {
+        fetch(`http://localhost:8000/favorites/${this.userID}/${this.parkID}`, {
           method: 'delete',
         })
           .then(res => {
@@ -124,7 +143,7 @@ var app = new Vue({
           })
       }
       else if (this.heartColor == NOT_FAVORITES_COLOR) {
-        fetch(`/favorites/${this.userID}/${this.parkID}`, {
+        fetch(`http://localhost:8000/favorites/${this.userID}/${this.parkID}`, {
           method: 'put',
         })
           .then(res => {
@@ -140,14 +159,14 @@ var app = new Vue({
     // 浏览景点
     showSpots: function () {
       if (!this.isSpotsUpdated) {
-        fetch(`/parks/${this.id}/spots`, {
+        fetch(`http://localhost:8000/parks/${this.parkID}/spots`, {
           method: 'get',
         })
           .then(res => {
             if (res.ok) return res.json()
           })
           .then(response => {
-            this.spots = response.data
+            this.spots = response
             this.isSpotsUpdated = true
           })
       }
@@ -156,14 +175,14 @@ var app = new Vue({
     // 浏览评论
     showComments: function () {
       if (!this.isCommentsUpdated) {
-        fetch(`/parks/${this.id}/comments`, {
+        fetch(`http://localhost:8000/parks/${this.parkID}/comments`, {
           method: 'get',
         })
           .then(res => {
             if (res.ok) return res.json()
           })
           .then(response => {
-            this.comments = response.data
+            this.comments = response
             this.isCommentsUpdated = true
           })
       }
@@ -171,33 +190,31 @@ var app = new Vue({
 
     // 发表评论
     comment: function () {
-      if (!this.isCommentsUpdated) {
-        fetch(`/comment`, {
-          method: 'put',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            park_id: this.parkID,
-            user_id: this.userID,
-            score: this.score,
-            content: this.content
-          })
+      fetch(`http://localhost:8000/comment`, {
+        method: 'put',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          park_id: this.parkID,
+          user_id: this.userID,
+          score: this.score,
+          content: this.content
         })
-          .then(res => {
-            if (res.ok) return res.json()
-          })
-          .then(response => {
-            this.comments.unshift({ score: this.score, content: this.content })
-            this.content = ''
-          })
-      }
+      })
+        .then(res => {
+          if (res.ok) return res.json()
+        })
+        .then(response => {
+          this.comments.unshift({ score: this.score, content: this.content })
+          this.content = ''
+        })
     },
   }
 })
 
 var map = new BMapGL.Map('container'); // 创建Map实例
-map.centerAndZoom(new BMapGL.Point(116.404, 39.915), 14); // 初始化地图,设置中心点坐标和地图级别
+map.centerAndZoom(new BMapGL.Point(116.404, 39.915), 16); // 初始化地图,设置中心点坐标和地图级别
 map.enableScrollWheelZoom(true); // 开启鼠标滚轮缩放
 
 function updateMap(x, y) {
-  map.centerAndZoom(new BMapGL.Point(x, y), 12);
+  map.centerAndZoom(new BMapGL.Point(x, y), 16);
 }
