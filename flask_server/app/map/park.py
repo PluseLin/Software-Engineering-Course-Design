@@ -30,14 +30,14 @@ def getAllParks():
 def findparks(id):
     ret_data = {
         "id": 0,
-        "parkname": "",
+        "name": "",
         "longitude": "",
         "latitude": "",
     }
     if request.method == 'GET':
         thispark= Park_Query_by_id(id)
         if thispark is not None:
-            ret_data["parkname"] = thispark.parkname
+            ret_data["name"] = thispark.parkname
             ret_data["longitude"] =thispark.longitude
             ret_data["latitude"] =thispark.latitude
             ret_data["id"] =id
@@ -109,7 +109,6 @@ def addCollection(userID,parkID):
         "message":""
     }
     if request.method == 'PUT':
-        req_data = request.get_json()
         if(Collection_Query_by_p_uid(userID,parkID) is None):
             Collection_Add(int(userID), int(parkID))
             ret_data["iscorrect"] = True

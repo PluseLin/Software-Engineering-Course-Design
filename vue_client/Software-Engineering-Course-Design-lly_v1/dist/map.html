@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>Baidu Map </title>
+  <title>Map</title>
   <style type="text/css">
     html {
       height: 100%
@@ -33,7 +33,7 @@
   <div id="app">
     <v-app id="inspire">
       <v-app-bar app clipped-left color="white">
-        <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+        <v-app-bar-nav-icon @click="showFavorties"></v-app-bar-nav-icon>
         <span class="title mr-5">收藏</span>
 
         <div v-on:keyup.enter="search">
@@ -61,14 +61,12 @@
       </v-navigation-drawer>
 
       <v-main>
-
         <v-btn v-bind:color="heartColor" style="z-index: 10;" x-large icon absolute right bottom @click="clickHeart()">
           <v-icon>mdi-heart</v-icon>
         </v-btn>
 
         <div id="container">
         </div>
-
       </v-main>
 
       <div class="text-center">
@@ -80,7 +78,7 @@
           </template>
 
           <v-card>
-            <v-card-title>1号公园</v-card-title>
+            <v-card-title>{{parkName}}</v-card-title>
             <v-divider></v-divider>
             <v-card-text>
               <v-container v-for="(spot,index) in spots" :key="index" class="grey lighten-5">
@@ -94,7 +92,7 @@
                     </v-row>
                   </v-col>
                   <v-col>
-                    <v-img :aspect-ratio="16/9" src="/vue_client/1.jpg"></v-img>
+                    <v-img :aspect-ratio="16/9" v-bind:src="spot.img"></v-img>
                   </v-col>
                 </v-row>
               </v-container>
